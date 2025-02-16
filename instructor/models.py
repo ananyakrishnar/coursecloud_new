@@ -49,11 +49,11 @@ class Course(models.Model):
     description=models.TextField()
 
     price=models.DecimalField(decimal_places=2,max_digits=5)
-
+    
     owner=models.ForeignKey(User,on_delete=models.SET_NULL,related_name="courses",null=True)
 
     is_free=models.BooleanField(default=False)
-
+    
     picture=models.ImageField(upload_to="courseimages",null=True,blank=True,default="courseimages/default.png")
 
     thumbnail=EmbedVideoField()
@@ -66,6 +66,32 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class Module(models.Model):
+
+    title=models.CharField(max_length=200)
+
+    course_object=models.ForeignKey(Course,on_delete=models.CASCADE,related_name="modules")
+
+    order=models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.title  
+    
+class Lesson(models.Model):
+
+    title=models.CharField(max_length=200)
+
+    module_object=models.ForeignKey(Module,on_delete=models.CASCADE,related_name="lessons")
+
+    video=EmbedVideoField(null=True)
+
+    order=models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.module_object.title}+{self.title}"
+    
 
 
 
